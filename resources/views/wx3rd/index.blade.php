@@ -1,0 +1,1 @@
+<a href="{{ route('wx3rd.authorize') }}">Authorize</a>
