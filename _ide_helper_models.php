@@ -85,6 +85,10 @@ namespace NEUQer{
  * @property string $remember_token
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property string $sign
+ * @property string $avatar
+ * @property string $sex
+ * @property string $oldid
  * @property-read \Illuminate\Database\Eloquent\Collection|\NEUQer\Role[] $roles
  * @method static \Illuminate\Database\Query\Builder|\NEUQer\User whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\NEUQer\User whereNickname($value)
@@ -94,6 +98,10 @@ namespace NEUQer{
  * @method static \Illuminate\Database\Query\Builder|\NEUQer\User whereRememberToken($value)
  * @method static \Illuminate\Database\Query\Builder|\NEUQer\User whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\NEUQer\User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\User whereSign($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\User whereAvatar($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\User whereSex($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\User whereOldid($value)
  */
 	class User extends \Eloquent {}
 }
@@ -215,6 +223,25 @@ namespace NEUQer{
  * @method static \Illuminate\Database\Query\Builder|\NEUQer\WeixinUser whereUpdatedAt($value)
  */
 	class WeixinUser extends \Eloquent {}
+}
+
+namespace NEUQer{
+/**
+ * NEUQer\UserToken
+ *
+ * @property integer $user_id
+ * @property string $client
+ * @property string $token
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \NEUQer\User $user
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\UserToken whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\UserToken whereClient($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\UserToken whereToken($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\UserToken whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\UserToken whereUpdatedAt($value)
+ */
+	class UserToken extends \Eloquent {}
 }
 
 namespace NEUQer{

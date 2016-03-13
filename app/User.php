@@ -26,4 +26,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function jsonSerialize()
+    {
+        $arr = parent::jsonSerialize();
+        $arr['_id'] = strval($this->id);
+        $arr['id'] = strval($this->id);
+        return $arr;
+    }
 }

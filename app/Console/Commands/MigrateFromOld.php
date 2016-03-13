@@ -49,7 +49,7 @@ class MigrateFromOld extends Command
             foreach ($oldWeixinUsers as $oldWeixinUser) {
                 $user = User::create([
                     'nickname' => $oldWeixinUser->nickname,
-                    'password' => bcrypt($oldWeixinUser->open_id)
+                    'password' => md5($oldWeixinUser->open_id)
                 ]);
                 $weixinUser = new WeixinUser();
                 $weixinUser->user()->associate($user);

@@ -4,6 +4,7 @@ namespace NEUQer\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use NEUQer\Extensions\AppTokenGuard;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -24,8 +25,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(GateContract $gate)
     {
+        \Auth::extend('app_token', function ($app, $name, array $config) {
+            return new AppTokenGuard($app['request']);
+        });
         $this->registerPolicies($gate);
-
         //
     }
 }

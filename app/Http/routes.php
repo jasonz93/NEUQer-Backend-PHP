@@ -105,6 +105,17 @@ Route::group(['middleware' => ['api']], function () {
     Route::get('/wx3rd/test', function () {
         return Response::make(WeixinPlatform::generateAuthorizationUrl());
     });
+
+    Route::group(['namespace' => 'REST'], function () {
+        Route::post('/api/auth', [
+            'uses' => 'AuthController@postAuth',
+            'as' => 'api.auth.login'
+        ]);
+        Route::get('/api/auth/user', [
+            'middleware' => 'api.auth',
+            'uses' => 'AuthController@getUser'
+        ]);
+    });
 });
 
 Route::group(['namespace' => 'Wx3rd'], function () {
