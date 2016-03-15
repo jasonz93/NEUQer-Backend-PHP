@@ -115,6 +115,14 @@ Route::group(['middleware' => ['api']], function () {
             'middleware' => 'api.auth',
             'uses' => 'AuthController@getUser'
         ]);
+        Route::get('/api/home', [
+            'uses' => 'HomeController@getHome',
+            'as' => 'api.home'
+        ]);
+        Route::get('/api/home/history', [
+            'uses' => 'HomeController@getHistory',
+            'as' => 'api.home.history'
+        ]);
     });
 });
 

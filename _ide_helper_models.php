@@ -176,6 +176,40 @@ namespace NEUQer{
 
 namespace NEUQer{
 /**
+ * NEUQer\HomeMessage
+ *
+ * @property integer $id
+ * @property string $banner
+ * @property string $icon
+ * @property string $title
+ * @property string $subtitle
+ * @property string $type
+ * @property string $param
+ * @property integer $author_id
+ * @property integer $position
+ * @property boolean $is_banner
+ * @property boolean $show
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage whereBanner($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage whereIcon($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage whereTitle($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage whereSubtitle($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage whereParam($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage whereAuthorId($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage wherePosition($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage whereIsBanner($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage whereShow($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\HomeMessage whereUpdatedAt($value)
+ */
+	class HomeMessage extends \Eloquent {}
+}
+
+namespace NEUQer{
+/**
  * NEUQer\WeixinOAuth
  *
  * @property integer $weixin_user_id

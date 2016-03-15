@@ -32,6 +32,6 @@ class AuthController extends Controller
     }
 
     public function getUser() {
-        return \Response::json(\Auth::user());
+        return \Response::json(\Auth::guard('api')->user());
     }
 }

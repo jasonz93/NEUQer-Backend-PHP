@@ -27,9 +27,9 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function jsonSerialize()
+    public function toArray()
     {
-        $arr = parent::jsonSerialize();
+        $arr = parent::toArray();
         $arr['_id'] = strval($this->id);
         $arr['id'] = strval($this->id);
         return $arr;

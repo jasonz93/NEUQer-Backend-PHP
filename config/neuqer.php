@@ -14,5 +14,9 @@ return [
     'bbs' => [
         'mongo' => env('NEUQER_MONGO_STR'),
         'dbname' => env('NEUQER_BBS_DBNAME')
-    ]
+    ],
+    'home' => [
+        'mongo' => env('NEUQER_MONGO_STR'),
+        'dbname' => env('NEUQER_HOME_DBNAME')
+    ],
 ];

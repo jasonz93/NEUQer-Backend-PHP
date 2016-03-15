@@ -162,6 +162,7 @@ return [
         \NEUQer\Providers\MigrateFromOldProvider::class,
         \Zizaco\Entrust\EntrustServiceProvider::class,
         \NEUQer\Providers\InitCommandProvider::class,
+        \NEUQer\Providers\EasemobServiceProvider::class,
 
     ],
 
