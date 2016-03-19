@@ -75,6 +75,26 @@ namespace NEUQer{
 
 namespace NEUQer{
 /**
+ * NEUQer\BBSBoard
+ *
+ * @property integer $id
+ * @property string $name
+ * @property string $description
+ * @property string $picture
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSBoard whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSBoard whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSBoard whereDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSBoard wherePicture($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSBoard whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSBoard whereUpdatedAt($value)
+ */
+	class BBSBoard extends \Eloquent {}
+}
+
+namespace NEUQer{
+/**
  * NEUQer\User
  *
  * @property integer $id
@@ -233,6 +253,37 @@ namespace NEUQer{
 
 namespace NEUQer{
 /**
+ * NEUQer\BBSReply
+ *
+ * @property integer $id
+ * @property integer $user_id
+ * @property integer $topic_id
+ * @property integer $reply_id
+ * @property string $content
+ * @property string $pictures
+ * @property integer $floor
+ * @property string $oldid
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \NEUQer\BBSTopic $topic
+ * @property-read \NEUQer\User $user
+ * @property-read \NEUQer\BBSReply $reply
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSReply whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSReply whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSReply whereTopicId($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSReply whereReplyId($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSReply whereContent($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSReply wherePictures($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSReply whereFloor($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSReply whereOldid($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSReply whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSReply whereUpdatedAt($value)
+ */
+	class BBSReply extends \Eloquent {}
+}
+
+namespace NEUQer{
+/**
  * NEUQer\WeixinUser
  *
  * @property integer $id
@@ -303,6 +354,41 @@ namespace NEUQer{
  * @method static \Illuminate\Database\Query\Builder|\NEUQer\CETAdmission whereUpdatedAt($value)
  */
 	class CETAdmission extends \Eloquent {}
+}
+
+namespace NEUQer{
+/**
+ * NEUQer\BBSTopic
+ *
+ * @property integer $id
+ * @property integer $board_id
+ * @property integer $user_id
+ * @property string $title
+ * @property string $content
+ * @property string $pictures
+ * @property integer $view_count
+ * @property string $last_reply_time
+ * @property integer $last_reply_user_id
+ * @property string $oldid
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \NEUQer\User $user
+ * @property-read \NEUQer\BBSBoard $board
+ * @property-read \NEUQer\User $lastReplyUser
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSTopic whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSTopic whereBoardId($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSTopic whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSTopic whereTitle($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSTopic whereContent($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSTopic wherePictures($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSTopic whereViewCount($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSTopic whereLastReplyTime($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSTopic whereLastReplyUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSTopic whereOldid($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSTopic whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\NEUQer\BBSTopic whereUpdatedAt($value)
+ */
+	class BBSTopic extends \Eloquent {}
 }
 
 namespace NEUQer{

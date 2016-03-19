@@ -11,6 +11,7 @@ namespace NEUQer\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use NEUQer\Console\Commands\MigrateFromAppAuth;
+use NEUQer\Console\Commands\MigrateFromAppBBS;
 use NEUQer\Console\Commands\MigrateFromAppHome;
 use NEUQer\Console\Commands\MigrateFromOld;
 
@@ -22,6 +23,7 @@ class MigrateFromOldProvider extends ServiceProvider
             'command.migrate.old',
             'command.migrate.app.auth',
             'command.migrate.app.home',
+            'command.migrate.app.bbs'
         ]);
     }
 
@@ -40,6 +42,9 @@ class MigrateFromOldProvider extends ServiceProvider
         });
         $this->app->singleton('command.migrate.app.home', function () {
             return new MigrateFromAppHome();
+        });
+        $this->app->singleton('command.migrate.app.bbs', function () {
+            return new MigrateFromAppBBS();
         });
     }
 }
