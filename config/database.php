@@ -80,6 +80,15 @@ return [
             'engine' => null,
         ],
 
+        'redis' => [
+            'cluster' => false,
+            'default' => [
+                'host' => env('REDIS_HOST', '127.0.0.1'),
+                'port' => env('REDIS_PORT', 6379),
+                'database' => 0,
+            ],
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', 'localhost'),

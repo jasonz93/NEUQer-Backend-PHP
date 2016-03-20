@@ -12,6 +12,7 @@ namespace NEUQer\Http\Controllers\REST;
 use NEUQer\BBSBoard;
 use NEUQer\BBSTopic;
 use NEUQer\Http\Controllers\Controller;
+use Auth;
 use Request;
 use Response;
 
@@ -27,5 +28,11 @@ class BBSController extends Controller
         $page = Request::query('page', 1);
         $topics = BBSTopic::getLatest($per, $page);
         return Response::json($topics);
+    }
+
+    public function getTopic(BBSTopic $topic) {
+        $result = $topic->toArray();
+        $result['isLiked'] = $topic->isLikedByUser(Auth::guard('api')->user());
+        return Response::json($result);
     }
 }

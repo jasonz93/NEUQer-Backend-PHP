@@ -132,6 +132,11 @@ Route::group(['middleware' => ['api']], function () {
             'uses' => 'BBSController@getTopics',
             'as' => 'api.bbs.topic'
         ]);
+        Route::get('/api/bbs/topic/{topic}', [
+            'uses' => 'BBSController@getTopic',
+            'as' => 'api.bbs.topic.detail',
+            'middleware' => ['api.auth']
+        ]);
     });
 });
 

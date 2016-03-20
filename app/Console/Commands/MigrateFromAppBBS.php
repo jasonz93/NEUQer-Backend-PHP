@@ -5,10 +5,14 @@ namespace NEUQer\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use DB;
+use MongoDB\Client;
+use MongoDB\Model\BSONArray;
 use NEUQer\BBSBoard;
+use NEUQer\BBSLike;
 use NEUQer\BBSReply;
 use NEUQer\BBSTopic;
 use NEUQer\User;
+use Redis;
 
 class MigrateFromAppBBS extends Command
 {
@@ -45,8 +49,9 @@ class MigrateFromAppBBS extends Command
     {
         $this->info('Start to migrate bbs datas...');
         $config = config('neuqer')['bbs'];
-        $mongo = new \MongoClient($config['mongo']);
-        $db = $mongo->selectDB($config['dbname']);
+        $mongo = new Client($config['mongo']);
+//        $mongo = new \MongoClient($config['mongo']);
+        $db = $mongo->selectDatabase($config['dbname']);
         $topicCollection = $db->selectCollection('topics');
         $replyCollection = $db->selectCollection('replies');
         $commentCollection = $db->selectCollection('comments');
@@ -72,14 +77,25 @@ class MigrateFromAppBBS extends Command
                     $topic->title = $oldTopic['title'];
                     $topic->content = $oldTopic['content'];
                     if (isset($oldTopic['pictures'])) {
-                        $topic->setPictures($oldTopic['pictures']);
+                        $topic->pictures = $oldTopic['pictures']->bsonSerialize();
+
                     } else {
-                        $topic->setPictures([]);
+                        $topic->pictures = [];
                     }
                     $topic->created_at = Carbon::createFromTimestamp($oldTopic['time']->toDateTime()->getTimestamp());
                     $topic->view_count = $oldTopic['viewCount'];
                     $topic->oldid = $oldTopic['_id'];
                     $topic->saveOrFail();
+                    $likes = Redis::command('hgetall', ["bbs:like:topic:{$topic->oldid}"]);
+                    foreach ($likes as $userid => $time) {
+                        $time = intval($time) / 1000;
+                        $user = User::whereOldid($userid)->firstOrFail();
+                        $like = new BBSLike();
+                        $like->likeable()->associate($topic);
+                        $like->user()->associate($user);
+                        $like->created_at = Carbon::createFromTimestamp($time);
+                        $like->saveOrFail();
+                    }
                     $replies = $replyCollection->find([
                         'topic' => $oldTopic['_id']
                     ]);
@@ -91,13 +107,24 @@ class MigrateFromAppBBS extends Command
                         $reply->topic()->associate($topic);
                         $reply->content = $oldReply['content'];
                         if (isset($oldReply['pictures'])) {
-                            $reply->setPictures($oldReply['pictures']);
+                            $reply->pictures = $oldReply['pictures']->bsonSerialize();
                         } else {
-                            $reply->setPictures([]);
+                            $reply->pictures = [];
                         }
                         $reply->floor = $oldReply['floor'];
                         $reply->created_at = Carbon::createFromTimestamp($oldReply['time']->toDateTime()->getTimestamp());
+                        $reply->oldid = $oldReply['_id'];
                         $reply->saveOrFail();
+                        $likes = Redis::command('hgetall', ["bbs:like:reply:{$reply->oldid}"]);
+                        foreach ($likes as $userid => $time) {
+                            $time = intval($time) / 1000;
+                            $user = User::whereOldid($userid)->firstOrFail();
+                            $like = new BBSLike();
+                            $like->likeable()->associate($reply);
+                            $like->user()->associate($user);
+                            $like->created_at = Carbon::createFromTimestamp($time);
+                            $like->saveOrFail();
+                        }
                         $comments = $commentCollection->find([
                             'reply' => $oldReply['_id']
                         ]);

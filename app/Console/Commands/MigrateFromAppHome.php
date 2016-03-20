@@ -2,8 +2,11 @@
 
 namespace NEUQer\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use DB;
+use MongoDB\Client;
+use MongoDB\Driver\Server;
 use NEUQer\HomeMessage;
 
 class MigrateFromAppHome extends Command
@@ -41,8 +44,8 @@ class MigrateFromAppHome extends Command
     {
         $this->info('Start to migrate home datas...');
         $config = config('neuqer')['home'];
-        $mongo = new \MongoClient($config['mongo']);
-        $db = $mongo->selectDB($config['dbname']);
+        $mongo = new Client($config['mongo']);
+        $db = $mongo->selectDatabase($config['dbname']);
         $itemCollection = $db->selectCollection('items');
         $items = $itemCollection->find();
         DB::transaction(function () use ($items) {
@@ -67,7 +70,9 @@ class MigrateFromAppHome extends Command
                 $home->is_banner = $item['isBanner'];
                 $home->position = $item['position'];
                 $home->show = $item['show'];
-                $home->created_at = $item['_id']->getTimestamp();
+                if (isset($item['createTime'])) {
+                    $home->created_at = $item['createTime']->toDateTime()->getTimestamp();
+                }
                 $home->saveOrFail();
             }
         });

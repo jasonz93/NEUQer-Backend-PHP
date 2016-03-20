@@ -3,6 +3,8 @@
 namespace NEUQer\Console\Commands;
 
 use Illuminate\Console\Command;
+use MongoDB\Client;
+use MongoDB\Driver\Cursor;
 use NEUQer\User;
 use DB;
 
@@ -40,8 +42,9 @@ class MigrateFromAppAuth extends Command
     public function handle()
     {
         $config = config('neuqer')['auth'];
-        $mongo = new \MongoClient($config['mongo']);
-        $db = $mongo->selectDB($config['dbname']);
+//        $mongo = new \MongoClient($config['mongo']);
+        $mongo = new Client($config['mongo']);
+        $db = $mongo->selectDatabase($config['dbname']);
         $userCollection = $db->selectCollection('users');
         $users = $userCollection->find([
             'mobile' => [
@@ -49,12 +52,10 @@ class MigrateFromAppAuth extends Command
             ]
         ]);
         DB::transaction(function () use ($users) {
-            while ($users->hasNext()) {
-                $oldUser = $users->getNext();
-                /** @var \MongoId $oldId */
+            foreach ($users as $oldUser) {
                 $oldId = $oldUser['_id'];
                 $user = new User();
-                $user->setCreatedAt($oldId->getTimestamp());
+//                $user->setCreatedAt($oldId->getTimestamp());
                 $user->nickname = $oldUser['nickname'];
                 $user->mobile = $oldUser['mobile'];
                 $user->password = $oldUser['password'];

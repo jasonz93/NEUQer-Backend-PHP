@@ -2,13 +2,16 @@
 
 namespace NEUQer;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Carbon;
 
 class BBSTopic extends Model
 {
     protected $table = 'bbs_topics';
-    protected $dates = ['created_at', 'updated_at'];
+    protected $casts = [
+        'pictures' => 'array'
+    ];
 
     public function user() {
         return $this->belongsTo('NEUQer\User');
@@ -37,9 +40,14 @@ class BBSTopic extends Model
 
     public static function getLatest($per, $page) {
         return self::doesntHave('removed')
+            ->selectRaw('*,1 as list')
             ->limit($per)
             ->offset($per * ($page - 1))
             ->get();
+    }
+
+    public function isLikedByUser(User $user) {
+        return $this->likes()->getQuery()->where('user_id', '=', $user->id)->count() > 0;
     }
 
     public function toArray()
@@ -53,8 +61,8 @@ class BBSTopic extends Model
                 $this->board->name
             ],
             'title' => $this->title,
-            'content' => $this->content,
-            'pictures' => json_decode($this->pictures),
+            'content' => isset($this->list) ? mb_substr($this->content, 0, 100) : $this->content,
+            'pictures' => isset($this->list) ? array_slice($this->pictures, 0, 3) : $this->pictures,
             'replies' => BBSReply::where('topic_id', '=', $this->id)->count(),
             'lastReply' => $this->lastReply == null ? [
                 'time' => $this->created_at->format('Y-m-d H:i:s')

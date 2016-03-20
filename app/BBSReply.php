@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class BBSReply extends Model
 {
     protected $table = 'bbs_replies';
-    protected $dates = ['created_at', 'updated_at'];
+    protected $casts = [
+        'pictures' => 'array'
+    ];
 
     public function topic() {
         return $this->belongsTo('NEUQer\BBSTopic');
@@ -42,7 +44,7 @@ class BBSReply extends Model
             'topic' => strval($this->topic->id),
             'user' => strval($this->user->id),
             'content' => $this->content,
-            'pictures' => json_decode($this->pictures),
+            'pictures' => $this->pictures,
             'commentCount' => BBSReply::where('reply_id', '=', $this->id)->count(),
             'floor' => $this->floor,
             'time' => strtotime($this->created_at) * 1000
