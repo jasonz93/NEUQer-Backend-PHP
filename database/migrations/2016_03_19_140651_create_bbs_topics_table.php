@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBBSTopicsTable extends Migration
+class CreateBbsTopicsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -20,8 +20,7 @@ class CreateBBSTopicsTable extends Migration
             $table->text('content');
             $table->text('pictures');
             $table->integer('view_count');
-            $table->dateTime('last_reply_time');
-            $table->bigInteger('last_reply_user_id');
+            $table->bigInteger('last_reply_id')->nullable();
             $table->string('oldid', 24);
             $table->timestamps();
         });

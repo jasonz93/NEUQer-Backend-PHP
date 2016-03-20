@@ -2,6 +2,7 @@
 
 namespace NEUQer\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use DB;
 use NEUQer\BBSBoard;
@@ -63,6 +64,7 @@ class MigrateFromAppBBS extends Command
                     'tags' => $board->name
                 ]);
                 foreach ($topics as $oldTopic) {
+                    $this->info('Migrating topic '.$oldTopic['title']);
                     $user = User::where('oldid', '=', $oldTopic['user'])->firstOrFail();
                     $topic = new BBSTopic();
                     $topic->user()->associate($user);
@@ -71,13 +73,10 @@ class MigrateFromAppBBS extends Command
                     $topic->content = $oldTopic['content'];
                     if (isset($oldTopic['pictures'])) {
                         $topic->setPictures($oldTopic['pictures']);
+                    } else {
+                        $topic->setPictures([]);
                     }
-                    $topic->last_reply_time = $oldTopic['lastReply']['time']->toDateTime();
-                    if (isset($oldTopic['lastReply']['user'])) {
-                        $replyUser = User::whereOldid($oldTopic['lastReply']['user'])->firstOrFail();
-                        $topic->lastReplyUser()->associate($replyUser);
-                    }
-                    $topic->created_at = $oldTopic['time']->toDateTime();
+                    $topic->created_at = Carbon::createFromTimestamp($oldTopic['time']->toDateTime()->getTimestamp());
                     $topic->view_count = $oldTopic['viewCount'];
                     $topic->oldid = $oldTopic['_id'];
                     $topic->saveOrFail();
@@ -85,6 +84,7 @@ class MigrateFromAppBBS extends Command
                         'topic' => $oldTopic['_id']
                     ]);
                     foreach ($replies as $oldReply) {
+                        $this->info('Migrating floor '.$oldReply['floor'].' for topic '.$topic->title);
                         $replyUser = User::whereOldid($oldReply['user'])->firstOrFail();
                         $reply = new BBSReply();
                         $reply->user()->associate($replyUser);
@@ -92,9 +92,11 @@ class MigrateFromAppBBS extends Command
                         $reply->content = $oldReply['content'];
                         if (isset($oldReply['pictures'])) {
                             $reply->setPictures($oldReply['pictures']);
+                        } else {
+                            $reply->setPictures([]);
                         }
                         $reply->floor = $oldReply['floor'];
-                        $reply->created_at = $oldReply['time']->toDateTime();
+                        $reply->created_at = Carbon::createFromTimestamp($oldReply['time']->toDateTime()->getTimestamp());
                         $reply->saveOrFail();
                         $comments = $commentCollection->find([
                             'reply' => $oldReply['_id']
@@ -103,11 +105,19 @@ class MigrateFromAppBBS extends Command
                             $commentUser = User::whereOldid($oldComment['user'])->firstOrFail();
                             $comment = new BBSReply();
                             $comment->user()->associate($commentUser);
+                            $comment->topic()->associate($topic);
                             $comment->reply()->associate($reply);
                             $comment->content = $oldComment['content'];
-                            $comment->created_at = $oldComment['time']->toDateTime();
+                            $comment->created_at = Carbon::createFromTimestamp($oldComment['time']->toDateTime()->getTimestamp());
                             $comment->saveOrFail();
                         }
+                    }
+                    $lastReply = BBSReply::whereHas('topic', function ($query) use ($topic) {
+                        $query->where('id', '=', $topic->id);
+                    })->first();
+                    if ($lastReply != null) {
+                        $topic->lastReply()->associate($lastReply);
+                        $topic->saveOrFail();
                     }
                 }
             }

@@ -123,6 +123,15 @@ Route::group(['middleware' => ['api']], function () {
             'uses' => 'HomeController@getHistory',
             'as' => 'api.home.history'
         ]);
+
+        Route::get('/api/bbs/tag', [
+            'uses' => 'BBSController@getTags',
+            'as' => 'api.bbs.tag'
+        ]);
+        Route::get('/api/bbs/topic', [
+            'uses' => 'BBSController@getTopics',
+            'as' => 'api.bbs.topic'
+        ]);
     });
 });
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BBSReply extends Model
 {
     protected $table = 'bbs_replies';
+    protected $dates = ['created_at', 'updated_at'];
 
     public function topic() {
         return $this->belongsTo('NEUQer\BBSTopic');
@@ -18,6 +19,14 @@ class BBSReply extends Model
 
     public function reply() {
         return $this->belongsTo('NEUQer\BBSReply');
+    }
+
+    public function likes() {
+        return $this->morphMany('NEUQer\BBSLike', 'likeable');
+    }
+
+    public function removed() {
+        return $this->morphOne('NEUQer\BBSOperation', 'entity');
     }
 
     public function setPictures(array $pictures) {

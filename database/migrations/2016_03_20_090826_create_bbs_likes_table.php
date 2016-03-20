@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBbsBoardsTable extends Migration
+class CreateBbsLikesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,11 @@ class CreateBbsBoardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('bbs_boards', function (Blueprint $table) {
+        Schema::create('bbs_likes', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 30);
-            $table->text('description');
-            $table->text('picture');
+            $table->bigInteger('likeable_id');
+            $table->string('likeable_type');
+            $table->bigInteger('user_id');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateBbsBoardsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('bbs_boards');
+        Schema::drop('bbs_likes');
     }
 }
