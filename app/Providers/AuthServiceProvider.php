@@ -14,7 +14,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'NEUQer\CETAdmission' => 'NEUQer\Policies\CETPolicy'
+        'NEUQer\CETAdmission' => 'NEUQer\Policies\CETPolicy',
+        'NEUQer\Wx3rdMP' => 'NEUQer\Policies\Wx3rdMPPolicy',
     ];
 
     /**

@@ -163,6 +163,8 @@ return [
         \Zizaco\Entrust\EntrustServiceProvider::class,
         \NEUQer\Providers\InitCommandProvider::class,
         \NEUQer\Providers\EasemobServiceProvider::class,
+        \NEUQer\Providers\TuringServiceProvider::class,
+        \NEUQer\Providers\BcryptCommandProvider::class,
 
     ],
 
@@ -213,6 +215,7 @@ return [
         'WeixinPlatform' => \NEUQer\Facades\WeixinPlatformFacade::class,
         'WeixinCrypto' => \NEUQer\Facades\WeixinCryptoFacade::class,
         'Entrust'   => \Zizaco\Entrust\EntrustFacade::class,
+        'Turing' => \NEUQer\Facades\TuringFacade::class,
 
     ],
 

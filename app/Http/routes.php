@@ -36,19 +36,20 @@ Route::group(['middleware' => ['web']], function () {
     });
 
     Route::group(['namespace' => 'Wx3rd'], function () {
-        Route::get('/wx3rd', function () {
-            return view('wx3rd.index');
+        Route::group(['middleware' => ['auth']], function () {
+            Route::get('/wx3rd', [
+                'uses' => 'Wx3rdController@getIndex',
+                'as' => 'wx3rd'
+            ]);
+            Route::get('/wx3rd/authorize', [
+                'uses' => 'Wx3rdController@showAuthorize',
+                'as' => 'wx3rd.authorize'
+            ]);
+            Route::get('/wx3rd/authorize/callback', [
+                'uses' => 'Wx3rdController@showAuthorizeCallback',
+                'as' => 'wx3rd.authorize.callback'
+            ]);
         });
-        Route::get('/wx3rd/authorize', [
-            'uses' => 'Wx3rdController@showAuthorize',
-            'as' => 'wx3rd.authorize',
-            'middleware' => ['auth']
-        ]);
-        Route::get('/wx3rd/authorize/callback', [
-            'uses' => 'Wx3rdController@showAuthorizeCallback',
-            'as' => 'wx3rd.authorize.callback',
-            'middleware' => ['auth']
-        ]);
         Route::get('/wx3rd/mp/{mp}/oauth', [
             'uses' => 'MPController@getOAuth',
             'as' => 'wx3rd.mp.oauth'
@@ -89,8 +90,61 @@ Route::group(['middleware' => ['web']], function () {
                 'as' => 'cet.delete'
             ]);
         });
+
+        Route::group([
+            'namespace' => 'Manage',
+            'middleware' => ['auth', 'own.mp']
+        ], function () {
+            Route::get('/wx3rd/mp/{mp}/manage', [
+                'uses' => 'IndexController@getIndex',
+                'as' => 'wx3rd.mp.manage'
+            ]);
+            Route::get('/wx3rd/mp/{mp}/manage/refresh', [
+                'uses' => 'IndexController@getIndex',
+                'as' => 'wx3rd.mp.manage.refresh'
+            ]);
+            Route::get('/wx3rd/mp/{mp}/manage/reply', [
+                'uses' => 'ReplyController@getIndex',
+                'as' => 'wx3rd.mp.manage.reply'
+            ]);
+            Route::get('/wx3rd/mp/{mp}/manage/reply/handlers', [
+                'uses' => 'ReplyController@getHandlers',
+                'as' => 'wx3rd.mp.manage.reply.handlers'
+            ]);
+            Route::post('/wx3rd/mp/{mp}/manage/reply/handler', [
+                'uses' => 'ReplyController@createHandler',
+                'as' => 'wx3rd.mp.manage.reply.handler.create'
+            ]);
+            Route::put('/wx3rd/mp/{mp}/manage/reply/handler/{eventHandler}', [
+                'uses' => 'ReplyController@updateHandler',
+                'as' => 'wx3rd.mp.manage.reply.handler.update'
+            ]);
+        });
     });
 
+    Route::group([
+        'namespace' => 'Admin',
+        'middleware' => ['role:admin']
+    ], function () {
+        Route::get('/admin', [
+            'uses' => 'IndexController@getIndex',
+            'as' => 'admin'
+        ]);
+        Route::group(['namespace' => 'Wx3rd'], function () {
+            Route::get('/admin/wx3rd/mp', [
+                'uses' => 'MPController@getList',
+                'as' => 'admin.wx3rd.mp.list'
+            ]);
+            Route::get('/admin/wx3rd/mp/{mp}/info', [
+                'uses' => 'MPController@getInfo',
+                'as' => 'admin.wx3rd.mp.info'
+            ]);
+            Route::get('/admin/wx3rd/mp/{mp}/refresh', [
+                'uses' => 'MPController@getRefresh',
+                'as' => 'admin.wx3rd.mp.refresh'
+            ]);
+        });
+    });
 
 });
 
@@ -132,9 +186,60 @@ Route::group(['middleware' => ['api']], function () {
             'uses' => 'BBSController@getTopics',
             'as' => 'api.bbs.topic'
         ]);
-        Route::get('/api/bbs/topic/{topic}', [
+        Route::get('/api/bbs/topic/by-id', [
             'uses' => 'BBSController@getTopic',
             'as' => 'api.bbs.topic.detail',
+            'middleware' => ['api.auth']
+        ]);
+        Route::get('/api/bbs/topic/by-tag', [
+            'uses' => 'BBSController@getTopicsByTag',
+            'as' => 'api.bbs.topic.bytag'
+        ]);
+        Route::get('/api/bbs/reply/by-topic', [
+            'uses' => 'BBSController@getReplies',
+            'as' => 'api.bbs.reply',
+            'middleware' => ['api.auth']
+        ]);
+        Route::get('/api/bbs/reply/by-id', [
+            'uses' => 'BBSController@getReply',
+            'as' => 'api.bbs.reply.detail',
+            'middleware' => ['api.auth']
+        ]);
+        Route::get('/api/bbs/comment/by-reply', [
+            'uses' => 'BBSController@getComments',
+            'as' => 'api.bbs.comment'
+        ]);
+        Route::put('/api/bbs/topic/like', [
+            'uses' => 'BBSController@likeTopic',
+            'as' => 'api.bbs.topic.like',
+            'middleware' => ['api.auth']
+        ]);
+        Route::put('/api/bbs/reply/like', [
+            'uses' => 'BBSController@likeReply',
+            'as' => 'api.bbs.reply.like',
+            'middleware' => ['api.auth']
+        ]);
+        Route::get('/api/bbs/topic/stick/by-tag', function () {
+            return Response::json([]);
+        });
+        Route::put('/api/bbs/topic', [
+            'uses' => 'BBSController@postTopic',
+            'as' => 'api.bbs.topic.post',
+            'middleware' => ['api.auth']
+        ]);
+        Route::put('/api/bbs/reply', [
+            'uses' => 'BBSController@postReply',
+            'as' => 'api.bbs.reply.post',
+            'middleware' => ['api.auth']
+        ]);
+
+        Route::get('/api/im/neuqer', [
+            'uses' => 'IMController@getNeuqer',
+            'as' => 'api.im.neuqer'
+        ]);
+        Route::get('/api/im/friend', [
+            'uses' => 'IMController@getFriends',
+            'as' => 'api.im.friends',
             'middleware' => ['api.auth']
         ]);
     });

@@ -27,27 +27,57 @@ class BBSReply extends Model
         return $this->morphMany('NEUQer\BBSLike', 'likeable');
     }
 
+    public function comments() {
+        return $this->hasMany('NEUQer\BBSReply', 'reply_id', 'id');
+    }
+
     public function removed() {
         return $this->morphOne('NEUQer\BBSOperation', 'entity');
     }
 
-    public function setPictures(array $pictures) {
-        $this->pictures = json_encode($pictures);
-        return $this;
+    public function isLikedByUser(User $user) {
+        return $this->likes()->getQuery()->where('user_id', '=', $user->id)->count() > 0;
+    }
+
+    public static function getByTopicId($topicId, $per, $page) {
+        return self::whereTopicId($topicId)
+            ->doesntHave('reply')
+            ->limit($per)
+            ->offset($per * ($page - 1))
+            ->get();
+    }
+
+    public static function getCommentsByReplyId($replyId, $per, $page) {
+        return self::whereReplyId($replyId)
+            ->limit($per)
+            ->offset($per * ($page - 1))
+            ->get();
     }
 
     public function toArray()
     {
-        return [
+        $arr = [
             'id' => strval($this->id),
             '_id' => strval($this->id),
             'topic' => strval($this->topic->id),
             'user' => strval($this->user->id),
+            'userBrief' => $this->getUserBrief(),
             'content' => $this->content,
             'pictures' => $this->pictures,
+            'likeCount' => count($this->likes),
+            'comments' => $this->comments->slice(0, 3),
             'commentCount' => BBSReply::where('reply_id', '=', $this->id)->count(),
             'floor' => $this->floor,
-            'time' => strtotime($this->created_at) * 1000
+            'time' => $this->created_at->format('Y-m-d H:i:s')
+        ];
+        $arr['hasMoreComments'] = $arr['commentCount'] > 3;
+        return $arr;
+    }
+    public function getUserBrief() {
+        return [
+            '_id' => strval($this->user->id),
+            'nickname' => $this->user->nickname,
+            'avatar' => $this->user->avatar
         ];
     }
 }

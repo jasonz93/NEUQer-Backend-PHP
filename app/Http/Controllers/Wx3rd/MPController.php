@@ -10,11 +10,16 @@ namespace NEUQer\Http\Controllers\Wx3rd;
 
 
 use Illuminate\Routing\Controller;
+use NEUQer\SDK\Weixin\XmlParser;
+use NEUQer\Weixin\EventHandlerInterface;
+use NEUQer\Weixin\TuringHandler;
+use NEUQer\WeixinEventHandler;
 use NEUQer\WeixinUser;
 use NEUQer\Wx3rdMP;
 use Response;
 use Request;
 use WeixinCrypto;
+use DB;
 
 class MPController extends Controller
 {
@@ -33,27 +38,40 @@ class MPController extends Controller
 
         $weixinUser = WeixinUser::where('openid', '=', $xml['FromUserName'])->first();
         if ($weixinUser == null) {
-            $weixinUser = new WeixinUser();
-            $weixinUser->openid = $xml['FromUserName'];
-            $weixinUser->mp()->associate($mp);
-            if ($mp->canManageUser()) {
-                $weixinUser->refreshInfo(false);
-            } else {
-                $weixinUser->nickname = '微信用户';
-            }
-            $weixinUser->createUser();
-            $weixinUser->save();
+            DB::transaction(function () use ($xml, $mp) {
+                $weixinUser = new WeixinUser();
+                $weixinUser->openid = $xml['FromUserName'];
+                $weixinUser->mp()->associate($mp);
+                if ($mp->canManageUser()) {
+                    $weixinUser->refreshInfo(false);
+                } else {
+                    $weixinUser->nickname = '微信用户';
+                }
+                $weixinUser->createUser();
+                $weixinUser->save();
+            });
         }
 
-        $timestamp = time();
-        $responseXml = "<xml>
-<ToUserName><![CDATA[{$xml['FromUserName']}]]></ToUserName>
-<FromUserName><![CDATA[{$xml['ToUserName']}]]></FromUserName>
-<CreateTime>$timestamp</CreateTime>
-<MsgType><![CDATA[text]]></MsgType>
-<Content><![CDATA[你好]]></Content>
-</xml>";
-        $encryptedXml = $responseXml === '' ? 'success' : WeixinCrypto::encrtpyMsg($responseXml, time(), rand(10000,99999));
+        $responseXml = null;
+
+        $handlers = [
+            new TuringHandler()
+        ];
+
+        $handlers = WeixinEventHandler::whereMpAppId($mp->app_id)
+            ->where('priority', '>', 0)
+            ->orderBy('priority')
+            ->get();
+
+        foreach ($handlers as $handler) {
+            /** @var WeixinEventHandler $handler */
+            $responseXml = $handler->handle($weixinUser, $xml);
+            if ($responseXml !== null) {
+                break;
+            }
+        }
+
+        $encryptedXml = $responseXml === null ? 'success' : WeixinCrypto::encrtpyMsg(XmlParser::build($responseXml), time(), rand(10000,99999));
         return Response::make($encryptedXml, 200, [
             'Content-Type' => 'text/xml'
         ]);

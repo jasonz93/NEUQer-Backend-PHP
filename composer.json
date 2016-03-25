@@ -12,7 +12,8 @@
         "zizaco/entrust": "5.2.x-dev",
         "guzzlehttp/guzzle-services": "0.5.*",
         "predis/predis": "^1.0",
-        "mongodb/mongodb": "^1.0"
+        "mongodb/mongodb": "^1.0",
+        "lavary/laravel-menu": "^1.6"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

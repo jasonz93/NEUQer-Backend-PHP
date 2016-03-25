@@ -33,14 +33,24 @@ class BBSTopic extends Model
         return $this->morphOne('NEUQer\BBSOperation', 'entity');
     }
 
-    public function setPictures(array $pictures) {
-        $this->pictures = json_encode($pictures);
-        return $this;
-    }
-
     public static function getLatest($per, $page) {
         return self::doesntHave('removed')
-            ->selectRaw('*,1 as list')
+            ->selectRaw('bbs_topics.*,1 as list, (case when bbs_replies.created_at > bbs_topics.created_at then bbs_replies.created_at else bbs_topics.created_at end) as order_field')
+            ->leftJoin('bbs_replies', 'bbs_topics.last_reply_id', '=', 'bbs_replies.id')
+            ->orderBy('order_field', 'desc')
+            ->limit($per)
+            ->offset($per * ($page - 1))
+            ->get();
+    }
+
+    public static function getByTag($tag, $per, $page) {
+        return self::doesntHave('removed')
+            ->selectRaw('bbs_topics.*,1 as `list`, (case when bbs_replies.created_at > bbs_topics.created_at then bbs_replies.created_at else bbs_topics.created_at end) as order_field')
+            ->leftJoin('bbs_replies', 'bbs_topics.last_reply_id', '=', 'bbs_replies.id')
+            ->whereHas('board', function ($query) use ($tag) {
+                $query->where('name', '=', $tag);
+            })
+            ->orderBy('order_field', 'desc')
             ->limit($per)
             ->offset($per * ($page - 1))
             ->get();
@@ -63,7 +73,7 @@ class BBSTopic extends Model
             'title' => $this->title,
             'content' => isset($this->list) ? mb_substr($this->content, 0, 100) : $this->content,
             'pictures' => isset($this->list) ? array_slice($this->pictures, 0, 3) : $this->pictures,
-            'replies' => BBSReply::where('topic_id', '=', $this->id)->count(),
+            'replies' => BBSReply::where('topic_id', '=', $this->id)->doesntHave('reply')->count(),
             'lastReply' => $this->lastReply == null ? [
                 'time' => $this->created_at->format('Y-m-d H:i:s')
             ] : [

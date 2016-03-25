@@ -12,5 +12,7 @@ var elixir = require('laravel-elixir');
  */
 
 elixir(function(mix) {
-    mix.sass('app.scss');
+    //mix.sass('app.scss');
+    mix.copy('resources/assets/semantic', 'public/semantic');
+    mix.copy('resources/assets/jquery', 'public/jquery');
 });

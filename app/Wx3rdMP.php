@@ -22,6 +22,8 @@ class Wx3rdMP extends Model
     const FUNC_MATERIAL_MANAGE = 11;
     const FUNC_SHAKE = 12;
     const FUNC_OFFLINE_SHOP = 13;
+    const FUNC_PAY = 14;
+    const FUNC_CUSTOM_MENU = 15;
 
     const SERVICE_TYPE_SUBSCRIBE = 0;
     const SERVICE_TYPE_OLD_SUBSCRIBE = 1;
@@ -38,6 +40,9 @@ class Wx3rdMP extends Model
     protected $table = 'wx3rd_mps';
     protected $primaryKey = 'app_id';
     public $incrementing = false;
+    protected $casts = [
+        'func_infos' => 'array'
+    ];
 
     protected $hidden = [
         'access_token',
@@ -47,6 +52,10 @@ class Wx3rdMP extends Model
 
     public function user() {
         return $this->belongsTo('NEUQer\User');
+    }
+
+    public function eventHandler() {
+        return $this->hasMany('NEUQer\WeixinEventHandler', 'mp_app_id', 'app_id');
     }
 
     public function isAccessTokenExpired() {
@@ -93,18 +102,7 @@ class Wx3rdMP extends Model
         foreach ($authorizerInfo['authorization_info']['func_info'] as $funcInfo) {
             $funcInfos[] = $funcInfo['funcscope_category']['id'];
         }
-        $this->setFuncInfos($funcInfos);
-    }
-
-    /**
-     * @return array
-     */
-    public function getFuncInfos() {
-        return json_decode($this->func_infos, true);
-    }
-
-    public function setFuncInfos(array $funcInfos) {
-        $this->func_infos = json_encode($funcInfos);
+        $this->func_infos = $funcInfos;
     }
 
     public function getOAuthUrl($scope, $redirectRoute = '', $routeParams = []) {
@@ -174,11 +172,12 @@ class Wx3rdMP extends Model
     }
 
     public function hasFunc($func_id) {
-        return in_array($func_id, $this->getFuncInfos());
+        $funcs = $this->func_infos;
+        return in_array($func_id, $funcs);
     }
 
     public function canSetMenu() {
-        return $this->hasFunc(self::FUNC_MSG_AND_MENU) && $this->service_type == self::SERVICE_TYPE_SERVICE && $this->verify_type == self::VERIFY_TYPE_WEIXIN;
+        return $this->hasFunc(self::FUNC_CUSTOM_MENU);
     }
 
     public function canManageMaterial() {

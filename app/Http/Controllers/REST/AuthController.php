@@ -19,7 +19,7 @@ class AuthController extends Controller
     public function postAuth() {
         $mobile = Request::input('mobile');
         $password = Request::input('password');
-        $user = User::whereMobile($mobile)->wherePassword($password)->first();
+        $user = User::whereMobile($mobile)->whereOldpwd($password)->first();
         if ($user === null) {
             abort(403);
             return;

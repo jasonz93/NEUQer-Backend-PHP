@@ -33,7 +33,7 @@ class WeixinUser extends Model
             'email' => null,
             'mobile' => null,
             'nickname' => $this->nickname,
-            'password' => md5($this->openid)
+            'password' => bcrypt($this->openid)
         ]);
         $this->user()->associate($user);
     }
