@@ -56,7 +56,7 @@
 
         function generateTuringCard(handler) {
             var card = generateCardWithName(handler);
-            var priorityInput = $('<input type="number">');
+            var priorityInput = $('<input type="number">').val(handler.priority);
             var save = function () {
                 var url = '{{ route('wx3rd.mp.manage.reply.handler.update', ['mp' => $mp->app_id, 'eventHandler' => 'HANDLER']) }}';
                 $.ajax({
@@ -84,13 +84,63 @@
             return card;
         }
 
+        function generateKeywordCard(handler) {
+            var card = generateCardWithName(handler);
+            var priorityInput = $('<input type="number">').val(handler.priority);
+            var paramFields = generateKeywordHandlerFields();
+            paramFields.find('input[name="keyword"]').val(handler.params.keyword);
+            paramFields.find('input[type="checkbox"]').attr('checked', handler.params.accurate);
+            paramFields.find('input[name="content"]').val(handler.params.content);
+            var save = function () {
+                var url = '{{ route('wx3rd.mp.manage.reply.handler.update', ['mp' => $mp->app_id, 'eventHandler' => 'HANDLER']) }}';
+                $.ajax({
+                    url: url.replace(/HANDLER/, handler.id),
+                    type: 'put',
+                    data: JSON.stringify({
+                        priority: priorityInput.val(),
+                        params: getParamsFromFields(paramFields)
+                    }),
+                    contentType: 'application/json',
+                    success: function () {
+                        refresh();
+                    }
+                });
+            };
+            $('<div class="content">')
+                    .append(
+                            $('<div class="ui labeled input">').append(
+                                    $('<div class="ui label">').text('优先级')
+                            ).append(priorityInput)
+                    ).append(paramFields).appendTo(card);
+            $('<div class="content">')
+                    .append(
+                            $('<a class="ui primary button">').text('保存').click(save)
+                    ).appendTo(card);
+            return card;
+        }
+
         function generateHandlerCard(handler) {
             switch (handler.name) {
                 case 'TURING':
                     return generateTuringCard(handler);
+                case 'KEYWORD':
+                    return generateKeywordCard(handler);
                 default:
                     return null;
             }
+        }
+
+        function generateKeywordHandlerFields() {
+            var params = $('<div>')
+            $('<input type="text" name="keyword" placeholder="关键词">').appendTo(params);
+            $('<div class="inline field">')
+                    .html('<div class="ui checkbox">' +
+                            '<input type="checkbox" name="accurate" tabindex="0">' +
+                            '<label>精确匹配</label>' +
+                            '</div>')
+                    .appendTo(params);
+            $('<input type="text" name="content" placeholder="回复内容">').appendTo(params);
+            return params;
         }
 
         function refresh() {
@@ -123,23 +173,18 @@
             var params = $('#handlerParams');
             switch ($('#handlerName').val()) {
                 case 'KEYWORD':
-                    $('<input type="text" name="keyword" placeholder="关键词">').appendTo(params);
-                    $('<div class="inline field">')
-                            .html('<div class="ui checkbox">' +
-                                    '<input type="checkbox" name="accurate" tabindex="0">' +
-                                    '<label>精确匹配</label>' +
-                                    '</div>')
-                            .appendTo(params);
+                    params.append(generateKeywordHandlerFields());
                     break;
                 default:
                     params.empty();
             }
         });
 
-        $('#btnSave').click(function () {
-            var params = [];
-            $('#handlerParams input').each(function () {
+        function getParamsFromFields(fields) {
+            var params = {};
+            fields.find('input').each(function () {
                 var item = $(this);
+                console.log(item);
                 var value;
                 if (item.attr('type') == 'checkbox')
                     value = item.is(':checked');
@@ -148,7 +193,10 @@
                 var name = item.attr('name');
                 params[name] = value;
             });
-            console.log(params);
+            return params;
+        }
+
+        $('#btnSave').click(function () {
             $.ajax({
                 url: '{{ route('wx3rd.mp.manage.reply.handler.create', ['mp' => $mp->app_id]) }}',
                 method: 'post',
@@ -156,7 +204,7 @@
                 data: JSON.stringify({
                     name: $('#handlerName').val(),
                     priority: $('#handlerPriority').val(),
-                    params: params
+                    params: getParamsFromFields($('#handlerParams input'))
                 }),
                 success: function () {
                     $('.ui.modal').modal('hide');
@@ -169,6 +217,8 @@
             switch (name) {
                 case 'TURING':
                     return '小纽扣';
+                case 'KEYWORD':
+                    return '关键词'
                 default:
                     return name;
             }

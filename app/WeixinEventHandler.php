@@ -4,6 +4,7 @@ namespace NEUQer;
 
 use Illuminate\Database\Eloquent\Model;
 use NEUQer\Weixin\EventHandlerInterface;
+use NEUQer\Weixin\KeywordEventHandler;
 use NEUQer\Weixin\TuringHandler;
 
 class WeixinEventHandler extends Model
@@ -13,7 +14,8 @@ class WeixinEventHandler extends Model
     ];
 
     protected $handlers = [
-        TuringHandler::NAME => TuringHandler::class
+        TuringHandler::NAME => TuringHandler::class,
+        KeywordEventHandler::NAME => KeywordEventHandler::class
     ];
 
     public function mp() {

@@ -35,26 +35,34 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/auth/register', 'AuthController@postRegister');
     });
 
-    Route::group(['namespace' => 'Wx3rd'], function () {
+    Route::group([], function () {
+        Route::get('/views/{view}', function ($view) {
+            return view($view);
+        });
+    });
+
+    Route::group([
+        'prefix' => 'wx3rd',
+        'namespace' => 'Wx3rd'
+    ], function () {
         Route::group(['middleware' => ['auth']], function () {
-            Route::get('/wx3rd', [
-                'uses' => 'Wx3rdController@getIndex',
-                'as' => 'wx3rd'
-            ]);
-            Route::get('/wx3rd/authorize', [
+            Route::any('/', function () {
+                return view('wx3rd.layouts.master');
+            })->where('path', '.+');
+            Route::get('/authorize', [
                 'uses' => 'Wx3rdController@showAuthorize',
                 'as' => 'wx3rd.authorize'
             ]);
-            Route::get('/wx3rd/authorize/callback', [
+            Route::get('/authorize/callback', [
                 'uses' => 'Wx3rdController@showAuthorizeCallback',
                 'as' => 'wx3rd.authorize.callback'
             ]);
         });
-        Route::get('/wx3rd/mp/{mp}/oauth', [
+        Route::get('/mp/{mp}/oauth', [
             'uses' => 'MPController@getOAuth',
             'as' => 'wx3rd.mp.oauth'
         ]);
-        Route::get('/wx3rd/mp/{mp}', function (\NEUQer\Wx3rdMP $mp) {
+        Route::get('/mp/{mp}', function (\NEUQer\Wx3rdMP $mp) {
             return Response::json($mp);
         });
 
@@ -62,30 +70,30 @@ Route::group(['middleware' => ['web']], function () {
             'weixin.oauth',
             'auth'
         ]], function () {
-            Route::get('/wx3rd/prod/mp/{mp}/cet', [
+            Route::get('/prod/mp/{mp}/cet', [
                 'uses' => 'CETController@getList'
             ]);
-            Route::get('/wx3rd/mp/{mp}/cet/list', [
+            Route::get('/mp/{mp}/cet/list', [
                 'uses' => 'CETController@getList',
                 'as' => 'cet.list'
             ]);
-            Route::get('/wx3rd/mp/{mp}/cet/add', [
+            Route::get('/mp/{mp}/cet/add', [
                 'uses' => 'CETController@getAdd',
                 'as' => 'cet.add'
             ]);
-            Route::post('/wx3rd/mp/{mp}/cet/add', [
+            Route::post('/mp/{mp}/cet/add', [
                 'uses' => 'CETController@postAdd',
                 'as' => 'cet.add.action'
             ]);
-            Route::get('/wx3rd/mp/{mp}/cet/{admission}/edit', [
+            Route::get('/mp/{mp}/cet/{admission}/edit', [
                 'uses' => 'CETController@getEdit',
                 'as' => 'cet.edit'
             ]);
-            Route::post('/wx3rd/mp/{mp}/cet/{admission}/edit', [
+            Route::post('/mp/{mp}/cet/{admission}/edit', [
                 'uses' => 'CETController@postEdit',
                 'as' => 'cet.edit.action'
             ]);
-            Route::get('/wx3rd/mp/{mp}/cet/{admission}/delete', [
+            Route::get('/mp/{mp}/cet/{admission}/delete', [
                 'uses' => 'CETController@getDelete',
                 'as' => 'cet.delete'
             ]);
@@ -95,27 +103,27 @@ Route::group(['middleware' => ['web']], function () {
             'namespace' => 'Manage',
             'middleware' => ['auth', 'own.mp']
         ], function () {
-            Route::get('/wx3rd/mp/{mp}/manage', [
+            Route::get('/mp/{mp}/manage', [
                 'uses' => 'IndexController@getIndex',
                 'as' => 'wx3rd.mp.manage'
             ]);
-            Route::get('/wx3rd/mp/{mp}/manage/refresh', [
+            Route::get('/mp/{mp}/manage/refresh', [
                 'uses' => 'IndexController@getIndex',
                 'as' => 'wx3rd.mp.manage.refresh'
             ]);
-            Route::get('/wx3rd/mp/{mp}/manage/reply', [
+            Route::get('/mp/{mp}/manage/reply', [
                 'uses' => 'ReplyController@getIndex',
                 'as' => 'wx3rd.mp.manage.reply'
             ]);
-            Route::get('/wx3rd/mp/{mp}/manage/reply/handlers', [
+            Route::get('/mp/{mp}/manage/reply/handlers', [
                 'uses' => 'ReplyController@getHandlers',
                 'as' => 'wx3rd.mp.manage.reply.handlers'
             ]);
-            Route::post('/wx3rd/mp/{mp}/manage/reply/handler', [
+            Route::post('/mp/{mp}/manage/reply/handler', [
                 'uses' => 'ReplyController@createHandler',
                 'as' => 'wx3rd.mp.manage.reply.handler.create'
             ]);
-            Route::put('/wx3rd/mp/{mp}/manage/reply/handler/{eventHandler}', [
+            Route::put('/mp/{mp}/manage/reply/handler/{eventHandler}', [
                 'uses' => 'ReplyController@updateHandler',
                 'as' => 'wx3rd.mp.manage.reply.handler.update'
             ]);
