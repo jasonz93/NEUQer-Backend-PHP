@@ -5,7 +5,7 @@
     'use strict';
 
     angular
-        .module('wx3rd.dashboard')
+        .module('app.dashboard')
         .controller('DashboardController', DashboardController);
 
     DashboardController.$inject = ['$http'];

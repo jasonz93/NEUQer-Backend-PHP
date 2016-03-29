@@ -34,10 +34,48 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/auth/register', 'AuthController@getRegister');
         Route::post('/auth/register', 'AuthController@postRegister');
     });
-
-    Route::group([], function () {
-        Route::get('/views/{view}', function ($view) {
-            return view($view);
+    Route::get('/views/{name}', function ($name) {
+        error_log($name);
+        return view($name);
+    })->where('name', '.*');
+    Route::group(['prefix' => 'api'], function () {
+        Route::group([
+            'namespace' => 'Wx3rd',
+            'prefix' => 'wx3rd',
+            'middleware' => ['auth']
+        ], function () {
+            Route::get('/mps', [
+                'uses' => 'Wx3rdController@getMPs'
+            ]);
+            Route::group([
+                'namespace' => 'Manage',
+                'middleware' => ['own.mp']
+            ], function () {
+                Route::get('/mp/{mp}/info', [
+                    'uses' => 'IndexController@getInfo',
+                    'as' => 'wx3rd.mp.manage.info'
+                ]);
+                Route::get('/mp/{mp}/refresh', [
+                    'uses' => 'IndexController@getRefresh',
+                    'as' => 'wx3rd.mp.manage.refresh'
+                ]);
+                Route::get('/mp/{mp}/manage/reply', [
+                    'uses' => 'ReplyController@getIndex',
+                    'as' => 'wx3rd.mp.manage.reply'
+                ]);
+                Route::get('/mp/{mp}/reply/handlers', [
+                    'uses' => 'ReplyController@getHandlers',
+                    'as' => 'wx3rd.mp.manage.reply.handlers'
+                ]);
+                Route::post('/mp/{mp}/reply/handler', [
+                    'uses' => 'ReplyController@createHandler',
+                    'as' => 'wx3rd.mp.manage.reply.handler.create'
+                ]);
+                Route::put('/mp/{mp}/reply/handler/{eventHandler}', [
+                    'uses' => 'ReplyController@updateHandler',
+                    'as' => 'wx3rd.mp.manage.reply.handler.update'
+                ]);
+            });
         });
     });
 
@@ -46,7 +84,7 @@ Route::group(['middleware' => ['web']], function () {
         'namespace' => 'Wx3rd'
     ], function () {
         Route::group(['middleware' => ['auth']], function () {
-            Route::any('/', function () {
+            Route::any('/manage/{path?}', function () {
                 return view('wx3rd.layouts.master');
             })->where('path', '.+');
             Route::get('/authorize', [
@@ -96,36 +134,6 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('/mp/{mp}/cet/{admission}/delete', [
                 'uses' => 'CETController@getDelete',
                 'as' => 'cet.delete'
-            ]);
-        });
-
-        Route::group([
-            'namespace' => 'Manage',
-            'middleware' => ['auth', 'own.mp']
-        ], function () {
-            Route::get('/mp/{mp}/manage', [
-                'uses' => 'IndexController@getIndex',
-                'as' => 'wx3rd.mp.manage'
-            ]);
-            Route::get('/mp/{mp}/manage/refresh', [
-                'uses' => 'IndexController@getIndex',
-                'as' => 'wx3rd.mp.manage.refresh'
-            ]);
-            Route::get('/mp/{mp}/manage/reply', [
-                'uses' => 'ReplyController@getIndex',
-                'as' => 'wx3rd.mp.manage.reply'
-            ]);
-            Route::get('/mp/{mp}/manage/reply/handlers', [
-                'uses' => 'ReplyController@getHandlers',
-                'as' => 'wx3rd.mp.manage.reply.handlers'
-            ]);
-            Route::post('/mp/{mp}/manage/reply/handler', [
-                'uses' => 'ReplyController@createHandler',
-                'as' => 'wx3rd.mp.manage.reply.handler.create'
-            ]);
-            Route::put('/mp/{mp}/manage/reply/handler/{eventHandler}', [
-                'uses' => 'ReplyController@updateHandler',
-                'as' => 'wx3rd.mp.manage.reply.handler.update'
             ]);
         });
     });

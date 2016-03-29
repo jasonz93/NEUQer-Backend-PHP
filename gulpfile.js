@@ -15,7 +15,8 @@ require('laravel-elixir-ng-annotate');
 var jsDeps = [
     '../dep/angular/angular.min.js',
     '../dep/angular-ui-router/release/angular-ui-router.min.js',
-    '../dep/angular-resource/angular-resource.min.js'
+    '../dep/angular-resource/angular-resource.min.js',
+    '../dep/angular-semantic-ui/angular-semantic-ui.min.js'
 ];
 
 var cssDeps = [
@@ -24,13 +25,13 @@ var cssDeps = [
 ];
 
 var appScripts = [
-    'wx3rd/**/*.modules.js',
-    'wx3rd/**/*.js'
+    'wx3rd/app/**/*.modules.js',
+    'wx3rd/app/**/*.js'
 ];
 
 elixir(function(mix) {
     mix.scripts(jsDeps, 'public/js/dep.js');
     mix.styles(cssDeps, 'public/css/dep.css');
-    mix.annotate(appScripts, 'public/js/annotated.js');
-    mix.scripts('../../../public/js/annotated.js', 'public/js/app.min.js');
+    mix.annotate(appScripts, 'public/js/wx3rd-annotated.js');
+    mix.scripts('../../../public/js/wx3rd-annotated.js', 'public/js/wx3rd.min.js');
 });

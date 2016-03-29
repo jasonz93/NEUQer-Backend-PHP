@@ -1,12 +1,12 @@
 /**
- * Created by nicholas on 16-3-28.
+ * Created by nicholas on 16-3-29.
  */
 (function() {
 
     'use strict';
 
     angular
-        .module('wx3rd.dashboard')
+        .module('app.mpinfo')
         .run(appRun);
 
     appRun.$inject = ['routerHelper'];
@@ -18,13 +18,13 @@
     function getStates() {
         return [
             {
-                state: 'dashboard',
+                state: 'mp.info',
                 config: {
-                    url: '/dashboard',
-                    templateUrl: '/views/wx3rd.manage.dashboard.index',
-                    controller: 'DashboardController',
+                    url: '/info',
+                    templateUrl: '/views/wx3rd/manage/mpinfo/index',
+                    controller: 'MPInfoController',
                     controllerAs: 'vm',
-                    title: 'Dashboard'
+                    title: 'MPInfo'
                 }
             }
         ];

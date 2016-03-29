@@ -15,17 +15,12 @@ use Response;
 
 class IndexController extends Controller
 {
-    public function getIndex(Wx3rdMP $mp) {
-        return view('wx3rd.manage.index', [
-            'mp' => $mp
-        ]);
+    public function getInfo(Wx3rdMP $mp) {
+        return Response::json($mp);
     }
 
     public function getRefresh(Wx3rdMP $mp) {
         $mp->refreshInfo();
-        return Response::redirectToRoute('wx3rd.mp.manage', [
-            'mp' => $mp->app_id
-        ]);
     }
 
 

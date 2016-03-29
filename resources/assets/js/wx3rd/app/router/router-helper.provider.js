@@ -7,7 +7,7 @@
     'use strict';
 
     angular
-        .module('wx3rd.router')
+        .module('app.router')
         .provider('routerHelper', routerHelperProvider);
 
     routerHelperProvider.$inject = ['$locationProvider', '$stateProvider', '$urlRouterProvider'];

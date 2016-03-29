@@ -5,8 +5,7 @@
     'use strict';
 
     angular
-        .module('wx3rd.core', [
-            'ui.router',
-            'ngResource'
-        ])
+        .module('app.dashboard', [
+            'app.core'
+        ]);
 }());

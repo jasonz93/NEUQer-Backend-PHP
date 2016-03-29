@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="wx3rd" data-page="@{{ mainUrl }}">
+<html lang="en" ng-app="app" data-page="@{{ mainUrl }}">
 <head>
 
     <meta charset="utf-8">

@@ -38,10 +38,8 @@ class Wx3rdController extends Controller
         return Response::json($mp);
     }
 
-    public function getIndex() {
+    public function getMPs() {
         $mps = Wx3rdMP::whereUserId(Auth::user()->id)->get();
-        return view('wx3rd.index', [
-            'mps' => $mps
-        ]);
+        return Response::json($mps);
     }
 }

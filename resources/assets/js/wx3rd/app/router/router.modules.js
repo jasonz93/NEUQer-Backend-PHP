@@ -5,8 +5,7 @@
     'use strict';
 
     angular
-        .module('wx3rd', [
-            'wx3rd.core',
-            'wx3rd.router'
+        .module('app.router', [
+            'ui.router'
         ]);
 }());

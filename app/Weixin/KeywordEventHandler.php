@@ -27,7 +27,7 @@ class KeywordEventHandler implements EventHandlerInterface
             return null;
         }
         $hit = true;
-        if ($params['accurate']) {
+        if (isset($params['accurate']) && $params['accurate']) {
             $hit &= $xml['Content'] === $params['keyword'];
         } else {
             $hit &= str_contains($xml['Content'], $params['keyword']);
