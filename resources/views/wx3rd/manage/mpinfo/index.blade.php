@@ -4,18 +4,19 @@
         height: 150px;
     }
 </style>
-<h1 class="ui dividing header">公众号信息</h1>
-<table class="ui definition celled table">
+<h1>公众号信息</h1>
+
+<table>
     <tbody>
     <tr>
-        <td class="two wide">操作</td>
+        <td>操作</td>
         <td>
-            <a class="ui positive button" ng-click="vm.refresh()">刷新</a>
+            <md-button class="md-raised" ng-click="vm.refresh()">刷新</md-button>
         </td>
     </tr>
     <tr>
-        <td class="two wide">头像</td>
-        <td><img class="avatar" ng-src="@{{ vm.mp.avatar }}"/> </td>
+        <td>头像</td>
+        <td><img class="avatar" ng-src="@{{ vm.mp.avatar }}" md-whiteframe="4"/></td>
     </tr>
     <tr>
         <td>名称</td>

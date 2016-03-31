@@ -1,19 +1,20 @@
-<div class="card" ng-repeat="handler in {{ $handlers }}">
-    <div class="content">
-        <div class="header">
+<md-card ng-repeat="handler in {{ $handlers }}" md-whiteframe="4">
+    <md-card-title>
+        <md-card-title-text>
             <span ng-bind="handler.name"></span>
-        </div>
-    </div>
-    <div class="content">
-        <div class="ui labeled input">
-            <div class="ui label text">优先级</div>
+        </md-card-title-text>
+    </md-card-title>
+    <md-card-content layout="column">
+        <md-input-container>
+            <label>优先级</label>
             <input type="number" ng-model="handler.priority">
+        </md-input-container>
+        <div layout="column" ng-if="handler.name == 'KEYWORD'">
+            @include('wx3rd.manage.reply.keyword_params')
         </div>
-    </div>
-    <div class="content" ng-if="handler.name == 'KEYWORD'">
-        @include('wx3rd.manage.reply.keyword_params')
-    </div>
-    <div class="content">
-        <a class="ui primary button" ng-click="vm.save(handler)">保存</a>
-    </div>
-</div>
+    </md-card-content>
+    <md-card-actions layout="row" layout-align="end center">
+        <md-button class="md-raised" ng-click="vm.remove(handler)">删除</md-button>
+        <md-button class="md-raised" ng-click="vm.save(handler)">保存</md-button>
+    </md-card-actions>
+</md-card>

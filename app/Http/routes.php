@@ -75,6 +75,18 @@ Route::group(['middleware' => ['web']], function () {
                     'uses' => 'ReplyController@updateHandler',
                     'as' => 'wx3rd.mp.manage.reply.handler.update'
                 ]);
+                Route::delete('/mp/{mp}/reply/handler/{eventHandler}', [
+                    'uses' => 'ReplyController@deleteHandler',
+                    'as' => 'wx3rd.mp.manage.reply.handler.delete'
+                ]);
+                Route::get('/mp/{mp}/menu/current', [
+                    'uses' => 'MenuController@getCurrent',
+                    'as' => 'wx3rd.mp.manage.menu.current'
+                ]);
+                Route::post('/mp/{mp}/menu', [
+                    'uses' => 'MenuController@postMenu',
+                    'as' => 'wx3rd.mp.manage.menu.create'
+                ]);
             });
         });
     });

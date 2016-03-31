@@ -11,6 +11,7 @@
             'app.dashboard',
             'app.mp',
             'app.mpinfo',
-            'app.reply'
+            'app.reply',
+            'app.menu'
         ]);
 }());

@@ -199,4 +199,13 @@ class Wx3rdMP extends Model
     public function canManageUser() {
         return $this->hasFunc(self::FUNC_USER_MANAGE) && $this->verify_type == self::VERIFY_TYPE_WEIXIN;
     }
+
+    public function getCurrentMenu() {
+        $result = WeixinClient::getCurrentCustomMenu($this->getAccessToken());
+        return $result['menu'];
+    }
+
+    public function createCustomMenu(array $menu) {
+        return WeixinClient::createCustomMenu($this->getAccessToken(), $menu);
+    }
 }

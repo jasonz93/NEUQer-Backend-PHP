@@ -16,12 +16,14 @@ var jsDeps = [
     '../dep/angular/angular.min.js',
     '../dep/angular-ui-router/release/angular-ui-router.min.js',
     '../dep/angular-resource/angular-resource.min.js',
-    '../dep/angular-semantic-ui/angular-semantic-ui.min.js'
+    '../dep/angular-animate/angular-animate.min.js',
+    '../dep/angular-aria/angular-aria.min.js',
+    '../dep/angular-messages/angular-messages.min.js',
+    '../dep/angular-material/angular-material.min.js'
 ];
 
 var cssDeps = [
-    '../dep/font-awesome/css/font-awesome.min.css',
-    '../dep/semantic/semantic.min.css'
+    '../dep/angular-material/angular-material.min.css'
 ];
 
 var appScripts = [

@@ -43,4 +43,8 @@ class ReplyController extends Controller
         $eventHandler->params = Request::input('params', []);
         $eventHandler->saveOrFail();
     }
+
+    public function deleteHandler(Wx3rdMP $mp, WeixinEventHandler $eventHandler) {
+        $eventHandler->delete();
+    }
 }

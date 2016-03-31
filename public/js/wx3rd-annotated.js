@@ -11,7 +11,8 @@
             'app.dashboard',
             'app.mp',
             'app.mpinfo',
-            'app.reply'
+            'app.reply',
+            'app.menu'
         ]);
 }());
 /**
@@ -23,7 +24,8 @@
     angular
         .module('app.core', [
             'ui.router',
-            'ngResource'
+            'ngResource',
+            'ngMaterial'
         ])
 }());
 /**
@@ -34,6 +36,17 @@
 
     angular
         .module('app.dashboard', [
+            'app.core'
+        ]);
+}());
+/**
+ * Created by nicholas on 16-3-30.
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.menu', [
             'app.core'
         ]);
 }());
@@ -125,6 +138,76 @@
                     controller: 'DashboardController',
                     controllerAs: 'vm',
                     title: 'Dashboard'
+                }
+            }
+        ];
+    }
+})();
+/**
+ * Created by nicholas on 16-3-30.
+ */
+(function () {
+    'use strict';
+
+    angular
+        .module('app.menu')
+        .controller('MenuController', MenuController);
+
+    MenuController.$inject = ['$http', '$stateParams'];
+
+    function MenuController($http, $stateParams) {
+        var vm = this;
+
+        vm.current = {
+            button: []
+        };
+
+        getData();
+
+        function getData() {
+            $http.get('/api/wx3rd/mp/' + $stateParams.mp + '/menu/current').success(function (data) {
+                vm.current = data;
+            });
+        }
+
+        vm.setCurrentItem = function (item) {
+            vm.currentItem = item;
+        };
+
+        vm.save = function (menu) {
+            $http.post('/api/wx3rd/mp/' + $stateParams.mp + '/menu', menu).success(function () {
+                getData();
+            });
+        };
+    }
+}());
+/**
+ * Created by nicholas on 16-3-30.
+ */
+(function() {
+
+    'use strict';
+
+    angular
+        .module('app.menu')
+        .run(appRun);
+
+    appRun.$inject = ['routerHelper'];
+    /* @ngInject */
+    function appRun(routerHelper) {
+        routerHelper.configureStates(getStates());
+    }
+
+    function getStates() {
+        return [
+            {
+                state: 'mp.menu',
+                config: {
+                    url: '/menu',
+                    templateUrl: '/views/wx3rd/manage/menu/index',
+                    controller: 'MenuController',
+                    controllerAs: 'vm',
+                    title: 'Menu'
                 }
             }
         ];
@@ -260,13 +343,14 @@
         .module('app.reply')
         .controller('ReplyController', ReplyController);
 
-    ReplyController.$inject = ['$http', '$stateParams'];
+    ReplyController.$inject = ['$http', '$stateParams', '$mdDialog'];
 
-    function ReplyController($http, $stateParams) {
+    function ReplyController($http, $stateParams, $mdDialog) {
         var vm = this;
         vm.save = save;
         vm.showAdd = showAdd;
         vm.create = create;
+        vm.remove = remove;
 
         getData();
 
@@ -296,9 +380,36 @@
             });
         }
 
-        function showAdd() {
-            console.log('try to show add modal');
-            vm.showAddModal = true;
+        function remove(handler) {
+            $http.delete('/api/wx3rd/mp/' + $stateParams.mp + '/reply/handler/' + handler.id).success(function () {
+                getData();
+            });
+        }
+
+        function showAdd(ev) {
+            $mdDialog.show({
+                controller: AddDialogController,
+                templateUrl: '/views/wx3rd/manage/reply/add_dialog',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true
+            }).then(function (handler) {
+                $http.post('/api/wx3rd/mp/' + $stateParams.mp + '/reply/handler', handler).success(function () {
+                    getData();
+                });
+            }, function () {});
+        }
+
+        AddDialogController.$inject = ['$scope', '$mdDialog'];
+
+        function AddDialogController($scope, $mdDialog) {
+            $scope.save = function (handler) {
+                $mdDialog.hide(handler);
+            };
+
+            $scope.cancel = function () {
+                $mdDialog.cancel();
+            };
         }
     }
 }());

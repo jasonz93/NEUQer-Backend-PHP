@@ -24,6 +24,8 @@ class WeixinClient
     const ENDPOINT_GET_USER_INFO = '/cgi-bin/user/info';
     const ENDPOINT_GET_OAUTH_USER_INFO = '/sns/userinfo';
     const ENDPOINT_SEND_TEMPLATE_MESSAGE = '/cgi-bin/message/template/send';
+    const ENDPOINT_GET_CURRENT_CUSTOM_MENU = '/cgi-bin/menu/get';
+    const ENDPOINT_CREATE_CUSTOM_MENU = '/cgi-bin/menu/create';
 
     const CURL_OPT = [
         CURLOPT_RETURNTRANSFER => true,
@@ -165,6 +167,16 @@ class WeixinClient
         ]);
     }
 
+    public static function getCurrentCustomMenu($accessToken) {
+        return self::get(self::BASE_URL.self::ENDPOINT_GET_CURRENT_CUSTOM_MENU, ['access_token' => $accessToken]);
+    }
+
+    public static function createCustomMenu($accessToken, $menu) {
+        return self::post(self::BASE_URL.self::ENDPOINT_CREATE_CUSTOM_MENU, [
+            'access_token' => $accessToken
+        ], $menu);
+    }
+
     private static function post($url, $query, $body) {
         if ($query != null) {
             $url .= '?'.http_build_query($query);
@@ -176,7 +188,7 @@ class WeixinClient
         ];
         curl_setopt_array($ch, self::CURL_OPT);
         curl_setopt_array($ch, $opt);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body, JSON_UNESCAPED_UNICODE));
         return self::execute($ch);
     }
 

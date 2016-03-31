@@ -1,9 +1,7 @@
 @include('wx3rd.layouts.header')
 
-<div id="wrapper">
-
-    <div ui-view></div>
-
+<div ui-view layout-fill>
 </div>
+
 
 @include('wx3rd.layouts.footer')
