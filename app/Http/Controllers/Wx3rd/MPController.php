@@ -38,18 +38,18 @@ class MPController extends Controller
 
         $weixinUser = WeixinUser::where('openid', '=', $xml['FromUserName'])->first();
         if ($weixinUser == null) {
-            DB::transaction(function () use ($xml, $mp) {
-                $weixinUser = new WeixinUser();
-                $weixinUser->openid = $xml['FromUserName'];
-                $weixinUser->mp()->associate($mp);
-                if ($mp->canManageUser()) {
-                    $weixinUser->refreshInfo(false);
-                } else {
-                    $weixinUser->nickname = '微信用户';
-                }
-                $weixinUser->createUser();
-                $weixinUser->save();
-            });
+            DB::beginTransaction();
+            $weixinUser = new WeixinUser();
+            $weixinUser->openid = $xml['FromUserName'];
+            $weixinUser->mp()->associate($mp);
+            if ($mp->canManageUser()) {
+                $weixinUser->refreshInfo(false);
+            } else {
+                $weixinUser->nickname = '微信用户';
+            }
+            $weixinUser->createUser();
+            $weixinUser->save();
+            DB::commit();
         }
 
         $responseXml = null;

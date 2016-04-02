@@ -87,6 +87,10 @@ Route::group(['middleware' => ['web']], function () {
                     'uses' => 'MenuController@postMenu',
                     'as' => 'wx3rd.mp.manage.menu.create'
                 ]);
+                Route::get('/mp/{mp}/shake/audit', [
+                    'uses' => 'ShakeController@getAudit',
+                    'as' => 'wx3rd.mp.manage.shake.audit.status'
+                ]);
             });
         });
     });

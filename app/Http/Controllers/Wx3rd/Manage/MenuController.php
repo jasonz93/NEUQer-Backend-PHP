@@ -28,6 +28,9 @@ class MenuController extends Controller
     }
 
     private function removeBlanks($menu) {
+        if (isset($menu['type']) && $menu['type'] != '') {
+            unset($menu['sub_button']);
+        }
         foreach ($menu as $key => $value) {
             if (is_string($value) && strlen($value) == 0) {
                 unset($menu[$key]);

@@ -20,7 +20,7 @@
             {
                 state: 'dashboard',
                 config: {
-                    url: '/wx3rd/manage/dashboard',
+                    url: '/dashboard',
                     templateUrl: '/views/wx3rd/manage/dashboard/index',
                     controller: 'DashboardController',
                     controllerAs: 'vm',

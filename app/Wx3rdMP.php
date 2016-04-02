@@ -208,4 +208,8 @@ class Wx3rdMP extends Model
     public function createCustomMenu(array $menu) {
         return WeixinClient::createCustomMenu($this->getAccessToken(), $menu);
     }
+
+    public function getShakeAuditStatus() {
+        return WeixinClient::checkShakeAuditStatus($this->getAccessToken());
+    }
 }

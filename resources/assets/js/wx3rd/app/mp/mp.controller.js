@@ -16,8 +16,8 @@
         getData();
 
         function getData() {
-            $http.get('/api/wx3rd/mps').success(function (data) {
-                vm.mps = data;
+            $http.get('/api/wx3rd/mp/' + $stateParams.mp + '/info').success(function (data) {
+                vm.mp = data;
             });
         }
     }

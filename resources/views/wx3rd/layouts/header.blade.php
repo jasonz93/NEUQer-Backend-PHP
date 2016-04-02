@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/dep.css"/>
     <link rel="stylesheet" href="/css/app.min.css">
 
-    <base href="/">
+    <base href="/wx3rd/manage/">
     <title ng-bind="title"></title>
 
 </head>

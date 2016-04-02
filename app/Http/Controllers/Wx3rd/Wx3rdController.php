@@ -35,7 +35,7 @@ class Wx3rdController extends Controller
 
     public function showAuthorizeCallback() {
         $mp = WeixinPlatform::finishAuthorization(Auth::user(), Request::query('auth_code'));
-        return Response::json($mp);
+        return Response::redirectTo('/wx3rd/manage/dashboard');
     }
 
     public function getMPs() {

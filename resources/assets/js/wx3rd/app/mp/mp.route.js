@@ -20,7 +20,7 @@
             {
                 state: 'mp',
                 config: {
-                    url: '/wx3rd/manage/mp/:mp',
+                    url: '/mp/:mp',
                     templateUrl: '/views/wx3rd/manage/mp',
                     controller: 'MPController',
                     controllerAs: 'vm',

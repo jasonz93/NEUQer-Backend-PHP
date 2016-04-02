@@ -13,5 +13,12 @@
     function DashboardController($http) {
         var vm = this;
 
+        getData();
+
+        function getData() {
+            $http.get('/api/wx3rd/mps').success(function (data) {
+                vm.mps = data;
+            });
+        }
     }
 }());

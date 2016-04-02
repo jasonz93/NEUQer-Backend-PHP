@@ -57,8 +57,11 @@ class WeixinPlatformService
 
     public function finishAuthorization(User $user, $authCode) {
         $result = WeixinClient::queryAuth($this->getComponentAccessToken(), env('WX3RD_APP_ID'), $authCode);
-        $mp = new Wx3rdMP();
-        $mp->user()->associate($user);
+        $mp = Wx3rdMP::find($result['authorization_info']['authorizer_appid']);
+        if ($mp == null) {
+            $mp = new Wx3rdMP();
+            $mp->user()->associate($user);
+        }
         $mp->app_id = $result['authorization_info']['authorizer_appid'];
         $mp->access_token = $result['authorization_info']['authorizer_access_token'];
         $mp->expires_at = Utils::microtimestamp() + $result['authorization_info']['expires_in'] * 1000;

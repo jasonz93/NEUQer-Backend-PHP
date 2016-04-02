@@ -26,6 +26,7 @@ class WeixinClient
     const ENDPOINT_SEND_TEMPLATE_MESSAGE = '/cgi-bin/message/template/send';
     const ENDPOINT_GET_CURRENT_CUSTOM_MENU = '/cgi-bin/menu/get';
     const ENDPOINT_CREATE_CUSTOM_MENU = '/cgi-bin/menu/create';
+    const ENDPOINT_CHECK_SHAKE_AUDIT_STATUS = '/shakearound/account/auditstatus';
 
     const CURL_OPT = [
         CURLOPT_RETURNTRANSFER => true,
@@ -175,6 +176,10 @@ class WeixinClient
         return self::post(self::BASE_URL.self::ENDPOINT_CREATE_CUSTOM_MENU, [
             'access_token' => $accessToken
         ], $menu);
+    }
+
+    public static function checkShakeAuditStatus($accessToken) {
+        return self::get(self::BASE_URL.self::ENDPOINT_CHECK_SHAKE_AUDIT_STATUS, ['access_token' => $accessToken]);
     }
 
     private static function post($url, $query, $body) {

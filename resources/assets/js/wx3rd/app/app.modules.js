@@ -8,10 +8,12 @@
         .module('app', [
             'app.core',
             'app.router',
+            'app.login',
             'app.dashboard',
             'app.mp',
             'app.mpinfo',
             'app.reply',
-            'app.menu'
+            'app.menu',
+            'app.shake'
         ]);
 }());
