@@ -19,7 +19,7 @@ class WeixinOAuth extends Model
     ];
 
     public function weixinUser() {
-        return $this->belongsTo('NEUQer\WeixinUser');
+        return $this->belongsTo('NEUQer\WeixinUser','weixin_user_id','id');
     }
 
     public function isExpired() {

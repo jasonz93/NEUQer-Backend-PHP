@@ -14,7 +14,8 @@
         "predis/predis": "^1.0",
         "mongodb/mongodb": "^1.0",
         "lavary/laravel-menu": "^1.6",
-        "barryvdh/laravel-dompdf": "^0.6.1"
+        "barryvdh/laravel-dompdf": "^0.6.1",
+        "endroid/qrcode": "^1.6"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

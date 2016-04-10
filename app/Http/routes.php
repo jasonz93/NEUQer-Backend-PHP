@@ -151,6 +151,36 @@ Route::group(['middleware' => ['web']], function () {
                 'uses' => 'CETController@getDelete',
                 'as' => 'cet.delete'
             ]);
+
+
+
+
+            //the signin stsyem
+
+            Route::get('/mp/{mp}/qrcode', [
+               'uses' => 'SignInController@index'
+            ]);
+
+            Route::post('/mp/{mp}/qrcode/add',[
+                'uses' => 'SignInController@postAdd'
+            ]);
+            Route::get('/mp/{mp}/qrcode/info',[
+                'uses' => 'SignInController@getInfo',
+                'as'   => 'signin.info'
+            ]);
+            Route::get('/mp/{mp}/qrcode/list',[
+                'uses' => 'SignInController@getList',
+                'as'   => 'signin.list'
+            ]);
+            Route::get('/mp/{mp}/qrcode/getcode',[
+                'uses' => 'SignInController@getQrcode',
+            ]);
+            Route::get('/mp/{mp}/qrcode/check',[
+                'uses' => 'SignInController@check'
+            ]);
+            Route::get('/mp/{mp}/qrcode/delete',[
+                'uses' => 'SignInController@getDelete'
+            ]);
         });
     });
 
