@@ -175,9 +175,6 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('/mp/{mp}/qrcode/getcode',[
                 'uses' => 'SignInController@getQrcode',
             ]);
-            Route::get('/mp/{mp}/qrcode/check',[
-                'uses' => 'SignInController@check'
-            ]);
             Route::get('/mp/{mp}/qrcode/delete',[
                 'uses' => 'SignInController@getDelete'
             ]);
@@ -303,6 +300,15 @@ Route::group(['middleware' => ['api']], function () {
             'uses' => 'IMController@getFriends',
             'as' => 'api.im.friends',
             'middleware' => ['api.auth']
+        ]);
+    });
+
+    Route::group([
+        'namespace' => 'Signin',
+        'prefix' => 'signin'
+    ], function(){
+        Route::get('/qrcode/check',[
+            'uses' => 'SignInController@check'
         ]);
     });
 });

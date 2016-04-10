@@ -74,17 +74,4 @@ class SignInController extends Controller
             'status' => 0
         ]);
     }
-
-    public function check(Wx3rdMP $mp){
-        $uniqid = Request::query('uniqid');
-        $signin = new SigninQrcode();
-        if($signin->checkSignin($this->admission->id, $uniqid)){
-            return response()->json([
-                'status' => 0
-            ]);
-        }
-        return response()->json([
-            'ststus' => '10000'
-        ]);
-    }
 }
